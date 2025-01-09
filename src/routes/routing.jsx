@@ -7,10 +7,10 @@ import ManageBooking from "../pages/ManageBooking";
 import ManageRooms from "../pages/ManageRooms";
 import NavBar from "../components/NavBar"; // Sidebar component
 
-/*
+
 import { AuthProvider } from "../services/Authentication";
 import ReqAuth from "../services/ReqAuth";
-*/
+
 
 // Layout for Admin Pages
 const AdminLayout = ({ children }) => {
@@ -25,7 +25,7 @@ const AdminLayout = ({ children }) => {
 
 const Routing = () => {
   return (
-    /*<AuthProvider>*/
+    <AuthProvider>
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
@@ -34,30 +34,36 @@ const Routing = () => {
         <Route
           path="/admin"
           element={
+            <ReqAuth>
             <AdminLayout>
               <Dashboard />
             </AdminLayout>
+            </ReqAuth>
           }
         />
         <Route
           path="/admin/bookings"
           element={
+            <ReqAuth>
             <AdminLayout>
               <ManageBooking />
             </AdminLayout>
+            </ReqAuth>
           }
         />
         <Route
           path="/admin/manage-rooms"
           element={
+            <ReqAuth>
             <AdminLayout>
               <ManageRooms />
             </AdminLayout>
+            </ReqAuth>
           }
         />
       </Routes>
     </BrowserRouter>
-    /*</AuthProvider>*/
+    </AuthProvider>
   );
 };
 

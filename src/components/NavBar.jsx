@@ -1,14 +1,29 @@
 import React, { useState } from "react";
-import { HiX, HiMenu } from "react-icons/hi"; // Import X and Menu icons from react-icons
+import { HiX, HiMenu } from "react-icons/hi";
+import { FaTachometerAlt, FaClipboardList, FaDoorOpen, FaSignOutAlt } from "react-icons/fa"; // Import icons
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { useAuth } from "../services/Authentication";
 
 const NavBar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  const handleLogout = async () => {
+   try {
+    await auth.logout();
+    
+   } catch (error) {
+     console.error("Error logging out:", error);
+    
+   }
+  };
 
   return (
     <>
       {/* Mobile Menu Button */}
       <button
-        className="fixed top-4 left-4 z-30 md:hidden bg-blue-600 text-white p-2 rounded-full shadow-lg"
+        className="fixed top-4 right-4 z-30 md:hidden bg-blue-600 text-white p-2 rounded-full shadow-lg"
         aria-label="Open navigation menu"
         onClick={() => setIsDrawerOpen(true)}
       >
@@ -46,35 +61,43 @@ const NavBar = () => {
           {/* Navigation Links */}
           <ul className="space-y-4 flex-grow">
             <li>
-              <a
-                href="/admin"
-                className="hover:text-blue-300 block text-lg transition-all duration-300 transform hover:translate-x-2"
+              <button
+                onClick={() => navigate("/admin")}
+                className="flex items-center space-x-2 hover:text-blue-300 block text-lg transition-all duration-300 transform hover:translate-x-2"
               >
-                Dashboard
-              </a>
+                <FaTachometerAlt /> <span>Dashboard</span>
+              </button>
             </li>
             <li>
-              <a
-                href="/admin/bookings"
-                className="hover:text-blue-300 block text-lg transition-all duration-300 transform hover:translate-x-2"
+              <button
+                onClick={() => navigate("/admin/bookings")}
+                className="flex items-center space-x-2 hover:text-blue-300 block text-lg transition-all duration-300 transform hover:translate-x-2"
               >
-                Manage Bookings
-              </a>
+                <FaClipboardList /> <span>Manage Bookings</span>
+              </button>
             </li>
             <li>
-              <a
-                href="/admin/manage-rooms"
-                className="hover:text-blue-300 block text-lg transition-all duration-300 transform hover:translate-x-2"
+              <button
+                onClick={() => navigate("/admin/manage-rooms")}
+                className="flex items-center space-x-2 hover:text-blue-300 block text-lg transition-all duration-300 transform hover:translate-x-2"
               >
-                Manage Rooms
-              </a>
+                <FaDoorOpen /> <span>Manage Rooms</span>
+              </button>
             </li>
           </ul>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-2 bg-red-500 text-white p-2 rounded shadow-lg hover:bg-red-700 transition-all duration-300"
+          >
+            <FaSignOutAlt className="text-xl" /> <span>Logout</span>
+          </button>
 
           {/* Footer */}
           <div className="mt-auto">
             <p className="text-sm text-center">
-              © {new Date().getFullYear()} Hotel Admin Panel
+              © {new Date().getFullYear()} Aeon Tower By CMC Admin Panel
             </p>
           </div>
         </div>

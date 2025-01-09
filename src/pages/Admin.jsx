@@ -12,7 +12,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import { HiMenu, HiX } from "react-icons/hi";
+
 
 // Register chart components
 ChartJS.register(
@@ -107,14 +107,6 @@ const Admin = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Main Content */}
       <div className="flex-1 p-6 overflow-y-auto">
-        {/* Drawer Toggle Button */}
-        <button
-          className="md:hidden text-3xl text-blue-600 mb-4"
-          onClick={() => setIsDrawerOpen(true)}
-        >
-          <HiMenu />
-        </button>
-
         <h1 className="text-4xl font-bold text-blue-600 mb-8">Dashboard</h1>
 
         {/* Stats Cards */}
