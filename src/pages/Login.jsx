@@ -79,7 +79,7 @@ const LoginForm = () => {
                 <input
                   key={index}
                   id={`pin-${index}`}
-                  type="text"
+                  type="password"
                   value={digit}
                   maxLength="1"
                   onChange={(e) => handleChange(e.target.value, index)}
