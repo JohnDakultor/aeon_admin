@@ -236,20 +236,13 @@ function ManageRooms() {
     available: true,
   });
 
-  // Fetch rooms from the backend
   const fetchRooms = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/rooms");
-      // Check if the response data is an array
-      if (Array.isArray(response.data)) {
-        setRooms(response.data);
-      } else {
-        console.error("Received data is not an array:", response.data);
-        setRooms([]); // Set rooms to empty array if data is not in the expected format
-      }
+      setRooms(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching rooms:", error);
-      setRooms([]); // Handle error case by setting rooms to an empty array
+      setRooms([]);
     }
   };
 
@@ -257,30 +250,25 @@ function ManageRooms() {
     fetchRooms();
   }, []);
 
-  // Save room details to the backend
   const saveToDatabase = async () => {
     try {
-      // Ensure all fields are valid
       if (!newRoom.name || !newRoom.capacity || !newRoom.price) {
         alert("All fields must be filled.");
         return;
       }
-  
       const roomData = {
         ...newRoom,
         capacity: Number(newRoom.capacity),
         price: Number(newRoom.price),
       };
-  
-      console.log("Room data being sent:", roomData); // Log to see the data being sent
-  
+
       if (isEdit) {
         await axios.put(`http://localhost:5000/api/updateRoom/${currentRoom.id}`, roomData);
       } else {
         await axios.post("http://localhost:5000/api/createRoom", roomData);
       }
-  
-      fetchRooms(); // Refresh the room list after saving
+
+      fetchRooms();
       setIsPopupVisible(false);
       setNewRoom({ name: "", capacity: "", price: "", available: true });
       setIsEdit(false);
@@ -289,7 +277,6 @@ function ManageRooms() {
       console.error("Error saving room to the database:", error.response?.data || error);
     }
   };
-  
 
   const handleEdit = (room) => {
     setIsEdit(true);
@@ -306,7 +293,7 @@ function ManageRooms() {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/deleteRoom/${id}`);
-      fetchRooms(); // Refresh the room list after deletion
+      fetchRooms();
     } catch (error) {
       console.error("Error deleting room:", error);
     }
@@ -314,64 +301,63 @@ function ManageRooms() {
 
   return (
     <div className="p-4 md:p-8 bg-gray-100 min-h-screen manage-rooms">
-      <h1 className="text-4xl font-bold text-blue-600 mb-6">Manage Rooms</h1>
+      <h1 className="text-2xl sm:text-4xl font-bold text-blue-600 mb-6">Manage Rooms</h1>
 
-      {/* Table */}
-      <table className="table-auto w-full border-collapse border border-gray-300 mb-6">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Room Name</th>
-            <th className="border px-4 py-2">Capacity</th>
-            <th className="border px-4 py-2">Price</th>
-            <th className="border px-4 py-2">Available</th>
-            <th className="border px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(rooms) && rooms.length > 0 ? (
-            rooms.map((room) => (
-              <tr key={room.id}>
-                <td className="border px-4 py-2">{room.name}</td>
-                <td className="border px-4 py-2">{room.capacity} guests</td>
-                <td className="border px-4 py-2">${room.price}</td>
-                <td className="border px-4 py-2">{room.available ? "Yes" : "No"}</td>
-                <td className="border px-4 py-2 text-center">
-                  <div className="flex justify-center space-x-2">
-                    <button onClick={() => handleEdit(room)} className="text-green-500">
-                      <HiPencilAlt size={20} />
-                    </button>
-                    <button onClick={() => handleDelete(room.id)} className="text-red-500">
-                      <HiTrash size={20} />
-                    </button>
-                  </div>
+      <div className="overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300 mb-6 text-sm sm:text-base">
+          <thead>
+            <tr>
+              <th className="border px-2 sm:px-4 py-2">Room Name</th>
+              <th className="border px-2 sm:px-4 py-2">Capacity</th>
+              <th className="border px-2 sm:px-4 py-2">Price</th>
+              <th className="border px-2 sm:px-4 py-2">Available</th>
+              <th className="border px-2 sm:px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rooms.length > 0 ? (
+              rooms.map((room) => (
+                <tr key={room.id}>
+                  <td className="border px-2 sm:px-4 py-2">{room.name}</td>
+                  <td className="border px-2 sm:px-4 py-2">{room.capacity} guests</td>
+                  <td className="border px-2 sm:px-4 py-2">₱{room.price}</td>
+                  <td className="border px-2 sm:px-4 py-2">{room.available ? "Yes" : "No"}</td>
+                  <td className="border px-2 sm:px-4 py-2 text-center">
+                    <div className="flex justify-center space-x-2">
+                      <button onClick={() => handleEdit(room)} className="text-green-500">
+                        <HiPencilAlt size={20} />
+                      </button>
+                      <button onClick={() => handleDelete(room.id)} className="text-red-500">
+                        <HiTrash size={20} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-center py-4">
+                  No rooms available or error fetching data.
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-center py-4">
-                No rooms available or error fetching data.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-      {/* Add Room Button */}
       <button
         onClick={() => {
           setIsPopupVisible(true);
           setIsEdit(false);
         }}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
       >
         Add Room
       </button>
 
-      {/* Popup */}
       {isPopupVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-96 mx-4">
             <h2 className="text-lg font-bold mb-4">{isEdit ? "Edit Room" : "Add New Room"}</h2>
             <div className="mb-4">
               <label className="block font-medium mb-2">Room Type</label>
