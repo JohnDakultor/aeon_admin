@@ -13,6 +13,8 @@ import {
   ArcElement,
 } from "chart.js";
 
+import ChatAdmin from "../components/Chat";
+
 // Register chart components
 ChartJS.register(
   CategoryScale,
@@ -38,6 +40,9 @@ const Admin = () => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -233,6 +238,33 @@ const Admin = () => {
               />
             </div>
           </div>
+        </div>
+
+        <div className="fixed bottom-4 right-4 z-50">
+          {isChatOpen ? (
+            <div className="relative w-80 h-96 bg-white shadow-2xl rounded-lg border border-gray-200">
+              <button
+                onClick={() => setIsChatOpen(false)}
+                className="absolute top-3 right-3 text-gray-100 hover:text-gray-800 transition duration-300"
+                aria-label="Close Chat"
+              >
+                ✖
+              </button>
+              <ChatAdmin isChatOpen={isChatOpen} setIsChatOpen={setIsChatOpen} />
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="relative bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-5 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
+            >
+              Talk to us!
+              {unreadMessages > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-bold">
+                  {unreadMessages}
+                </span>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
