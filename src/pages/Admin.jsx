@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 
 import ChatAdmin from "../components/Chat";
+import io from "socket.io-client";
 
 // Register chart components
 ChartJS.register(
@@ -257,7 +258,7 @@ const Admin = () => {
               onClick={() => setIsChatOpen(true)}
               className="relative bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-5 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
             >
-              Talk to us!
+              customer inquiry
               {unreadMessages > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-bold">
                   {unreadMessages}

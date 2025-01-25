@@ -57,7 +57,7 @@ const ChatAdmin = ({ isChatOpen, setIsChatOpen }) => {
         <div className="relative bg-white shadow-xl rounded-lg flex flex-col h-[85vh] sm:h-[75vh]">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-blue-600 text-white rounded-t-lg">
-            <h1 className="text-lg font-semibold sm:text-xl">Admin Chat</h1>
+            <h1 className="text-lg font-semibold sm:text-xl">Talk to client</h1>
             <button
               onClick={handleCloseChat}  // Close the chat
               className="text-white hover:text-gray-200"
@@ -136,3 +136,5 @@ const ChatAdmin = ({ isChatOpen, setIsChatOpen }) => {
 };
 
 export default ChatAdmin;
+
+

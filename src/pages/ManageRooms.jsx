@@ -260,6 +260,7 @@ function ManageRooms() {
         ...newRoom,
         capacity: Number(newRoom.capacity),
         price: Number(newRoom.price),
+       
       };
 
       if (isEdit) {
@@ -270,7 +271,7 @@ function ManageRooms() {
 
       fetchRooms();
       setIsPopupVisible(false);
-      setNewRoom({ name: "", capacity: "", price: "", available: true });
+      setNewRoom({ name: "", capacity: "", price: "", available: true, room_number: "" });
       setIsEdit(false);
       setCurrentRoom(null);
     } catch (error) {
@@ -286,6 +287,7 @@ function ManageRooms() {
       capacity: room.capacity,
       price: room.price,
       available: room.available,
+      room_number: room.room_number,
     });
     setIsPopupVisible(true);
   };
@@ -311,6 +313,7 @@ function ManageRooms() {
               <th className="border px-2 sm:px-4 py-2">Capacity</th>
               <th className="border px-2 sm:px-4 py-2">Price</th>
               <th className="border px-2 sm:px-4 py-2">Available</th>
+              <th className="border px-2 sm:px-4 py-2">Room Number</th>
               <th className="border px-2 sm:px-4 py-2">Actions</th>
             </tr>
           </thead>
@@ -322,6 +325,7 @@ function ManageRooms() {
                   <td className="border px-2 sm:px-4 py-2">{room.capacity} guests</td>
                   <td className="border px-2 sm:px-4 py-2">₱{room.price}</td>
                   <td className="border px-2 sm:px-4 py-2">{room.available ? "Yes" : "No"}</td>
+                  <td className="border px-2 sm:px-4 py-2">{room.room_number}</td>
                   <td className="border px-2 sm:px-4 py-2 text-center">
                     <div className="flex justify-center space-x-2">
                       <button onClick={() => handleEdit(room)} className="text-green-500">
@@ -364,7 +368,7 @@ function ManageRooms() {
               <input
                 type="text"
                 className="w-full border px-4 py-2"
-                value={newRoom.name}
+                value={newRoom.name || ""}
                 onChange={(e) => setNewRoom((prev) => ({ ...prev, name: e.target.value }))}
               />
             </div>
@@ -373,7 +377,7 @@ function ManageRooms() {
               <input
                 type="number"
                 className="w-full border px-4 py-2"
-                value={newRoom.capacity}
+                value={newRoom.capacity || ""}
                 onChange={(e) => setNewRoom((prev) => ({ ...prev, capacity: e.target.value }))}
               />
             </div>
@@ -382,7 +386,7 @@ function ManageRooms() {
               <input
                 type="number"
                 className="w-full border px-4 py-2"
-                value={newRoom.price}
+                value={newRoom.price || ""}
                 onChange={(e) => setNewRoom((prev) => ({ ...prev, price: e.target.value }))}
               />
             </div>
@@ -396,6 +400,15 @@ function ManageRooms() {
                 <option value="true">Yes</option>
                 <option value="false">No</option>
               </select>
+            </div>
+            <div className="mb-4">
+              <label className="block font-medium mb-2">Room Number</label>
+              <input
+                type="number"
+                className="w-full border px-4 py-2"
+                value={newRoom.room_number || ""}
+                onChange={(e) => setNewRoom((prev) => ({ ...prev, room_number: e.target.value }))}
+              />
             </div>
             <div className="flex justify-end space-x-2">
               <button

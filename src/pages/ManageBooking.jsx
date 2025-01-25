@@ -190,7 +190,6 @@
 
 // export default ManageBookings;
 
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { HiOutlineSearch, HiPencilAlt, HiTrash } from "react-icons/hi";
@@ -222,7 +221,10 @@ const ManageBookings = () => {
 
   const handleSave = () => {
     axios
-      .put(`http://localhost:5000/api/bookings/${selectedBooking.id}`, selectedBooking)
+      .put(
+        `http://localhost:5000/api/bookings/${selectedBooking.id}`,
+        selectedBooking
+      )
       .then((response) => {
         setBookings((prev) =>
           prev.map((booking) =>
@@ -283,6 +285,7 @@ const ManageBookings = () => {
               <th className="px-4 py-2 text-left">Payment Method</th>
               <th className="px-4 py-2 text-left">Phone</th>
               <th className="px-4 py-2 text-left">Email</th>
+              <th className="px-4 py-2 text-left">Arrival-time</th>
               <th className="px-4 py-2 text-left">Actions</th>
             </tr>
           </thead>
@@ -293,13 +296,32 @@ const ManageBookings = () => {
                   {booking.first_name} {booking.last_name}
                 </td>
                 <td className="px-4 py-2">{booking.room_type}</td>
-                <td className="px-4 py-2">{new Date(booking.arrival_date).toLocaleDateString()}</td>
-                <td className="px-4 py-2">{new Date(booking.departure_date).toLocaleDateString()}</td>
+                <td className="px-4 py-2">
+                  {new Date(booking.arrival_date).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2">
+                  {new Date(booking.departure_date).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-2">{booking.number_of_guests}</td>
                 <td className="px-4 py-2">{booking.payment_amount || "N/A"}</td>
                 <td className="px-4 py-2">{booking.payment_method || "N/A"}</td>
                 <td className="px-4 py-2">{booking.phone_number || "N/A"}</td>
                 <td className="px-4 py-2">{booking.email || "N/A"}</td>
+                <td className="px-4 py-2">
+                  {(() => {
+                    const [hour, minute] = booking.arrival_time.split(":");
+                    const date = new Date();
+                    date.setHours(hour);
+                    date.setMinutes(minute);
+
+                    return date.toLocaleString([], {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    });
+                  })()}
+                </td>
+
                 <td className="px-4 py-2">
                   <div className="flex space-x-2">
                     <button
@@ -330,36 +352,73 @@ const ManageBookings = () => {
       </div>
 
       <div className="md:hidden">
-    {filteredBookings.map((booking) => (
-      <div key={booking.id} className="bg-white p-4 mb-4 shadow-lg rounded-lg">
-        <div className="flex justify-between items-center">
-          <h3 className="font-bold text-lg">{booking.first_name} {booking.last_name}</h3>
-          <div className="flex space-x-2">
-            <button
-              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-              onClick={() => openEditModal(booking)}
-            >
-              <HiPencilAlt />
-            </button>
-            <button
-              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              onClick={() => handleDelete(booking.id)}
-            >
-              <HiTrash />
-            </button>
+        {filteredBookings.map((booking) => (
+          <div
+            key={booking.id}
+            className="bg-white p-4 mb-4 shadow-lg rounded-lg"
+          >
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-lg">
+                {booking.first_name} {booking.last_name}
+              </h3>
+              <div className="flex space-x-2">
+                <button
+                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  onClick={() => openEditModal(booking)}
+                >
+                  <HiPencilAlt />
+                </button>
+                <button
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  onClick={() => handleDelete(booking.id)}
+                >
+                  <HiTrash />
+                </button>
+              </div>
+            </div>
+            <p>
+              <strong>Room:</strong> {booking.room_type}
+            </p>
+            <p>
+              <strong>Check-in:</strong>{" "}
+              {new Date(booking.arrival_date).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Check-out:</strong>{" "}
+              {new Date(booking.departure_date).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Guests:</strong> {booking.number_of_guests}
+            </p>
+            <p>
+              <strong>Payment Amount:</strong> {booking.payment_amount || "N/A"}
+            </p>
+            <p>
+              <strong>Payment Method:</strong> {booking.payment_method || "N/A"}
+            </p>
+            <p>
+              <strong>Phone:</strong> {booking.phone_number || "N/A"}
+            </p>
+            <p>
+              <strong>Email:</strong> {booking.email || "N/A"}
+            </p>
+            <p>
+              <strong>Arrival Time:</strong> {(() => {
+                    const [hour, minute] = booking.arrival_time.split(":");
+                    const date = new Date();
+                    date.setHours(hour);
+                    date.setMinutes(minute);
+
+                    return date.toLocaleString([], {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    });
+                  })()}
+            </p>
           </div>
-        </div>
-        <p><strong>Room:</strong> {booking.room_type}</p>
-        <p><strong>Check-in:</strong> {new Date(booking.arrival_date).toLocaleDateString()}</p>
-        <p><strong>Check-out:</strong> {new Date(booking.departure_date).toLocaleDateString()}</p>
-        <p><strong>Guests:</strong> {booking.number_of_guests}</p>
-        <p><strong>Payment Amount:</strong> {booking.payment_amount || "N/A"}</p>
-        <p><strong>Payment Method:</strong> {booking.payment_method || "N/A"}</p>
-        <p><strong>Phone:</strong> {booking.phone_number || "N/A"}</p>
-        <p><strong>Email:</strong> {booking.email || "N/A"}</p>
+        ))}
       </div>
-    ))}
-  </div>
 
       {/* Modal */}
       {isModalOpen && selectedBooking && (
@@ -367,7 +426,9 @@ const ManageBookings = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-2xl font-bold mb-4">Edit Booking</h2>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Guest Name</label>
+              <label className="block text-sm font-medium mb-1">
+                Guest Name
+              </label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
@@ -381,7 +442,9 @@ const ManageBookings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Last Name</label>
+              <label className="block text-sm font-medium mb-1">
+                Last Name
+              </label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
@@ -395,7 +458,9 @@ const ManageBookings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Room Type</label>
+              <label className="block text-sm font-medium mb-1">
+                Room Type
+              </label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
@@ -409,7 +474,9 @@ const ManageBookings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Check-in Date</label>
+              <label className="block text-sm font-medium mb-1">
+                Check-in Date
+              </label>
               <input
                 type="date"
                 className="w-full p-2 border rounded"
@@ -423,7 +490,9 @@ const ManageBookings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Check-out Date</label>
+              <label className="block text-sm font-medium mb-1">
+                Check-out Date
+              </label>
               <input
                 type="date"
                 className="w-full p-2 border rounded"
@@ -436,8 +505,29 @@ const ManageBookings = () => {
                 }
               />
             </div>
+
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Number of Guests</label>
+              <label className="block text-sm font-medium mb-1">
+                Arrival Time
+              </label>
+              <input
+                type="time"
+                className="w-full p-2 border rounded"
+                value={selectedBooking.arrival_time}
+                onChange={(e) =>
+                  setSelectedBooking((prev) => ({
+                    ...prev,
+                    arrival_time: e.target.value,
+                  }))
+                }
+              />
+            </div>
+          
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Number of Guests
+              </label>
               <input
                 type="number"
                 className="w-full p-2 border rounded"
@@ -451,7 +541,9 @@ const ManageBookings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Payment Amount</label>
+              <label className="block text-sm font-medium mb-1">
+                Payment Amount
+              </label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
@@ -465,7 +557,9 @@ const ManageBookings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Payment Method</label>
+              <label className="block text-sm font-medium mb-1">
+                Payment Method
+              </label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
@@ -479,7 +573,9 @@ const ManageBookings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Phone Number</label>
+              <label className="block text-sm font-medium mb-1">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 className="w-full p-2 border rounded"
